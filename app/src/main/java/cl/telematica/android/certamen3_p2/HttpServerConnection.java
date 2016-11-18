@@ -1,6 +1,9 @@
 package cl.telematica.android.certamen3_p2;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,19 +18,39 @@ import java.net.URL;
 
 public class HttpServerConnection {
 
-    public String connectToServer(String myUrl, int timeOut){
+    public String connectToServer(String myUrl, int timeOut, String requestMethod, JSONObject jsonObject){
         try {
             URL url = new URL(myUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
             conn.setConnectTimeout(timeOut);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
+            if(requestMethod.equals("GET")){
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
 
-            conn.connect();
+                conn.connect();
 
-            InputStream is = conn.getInputStream();
-            return readIt(is);
+                InputStream is = conn.getInputStream();
+                return readIt(is);
+            }
+            else if(requestMethod.equals("POST")){
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput (true);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("charset", "utf-8");
+
+                DataOutputStream wr = new DataOutputStream(conn.getOutputStream ());
+                wr.writeBytes(jsonObject.toString());
+                wr.flush();
+                wr.close();
+
+
+                InputStream is = conn.getInputStream();
+                return readIt(is);
+            }
+            else{
+                return null;
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

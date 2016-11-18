@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText mEditText;
@@ -24,6 +27,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String text = mEditText.getText().toString();
+                final JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("title", text);
+                    System.out.println(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 MyAsyncTaskExecutor.getInstance().executeMyAsynctask(new Listener() {
                     @Override
                     public void onSuccess(String result) {
@@ -31,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra(ResultsActivity.RESULT, result);
                         startActivity(intent);
                     }
-                }, text);
+                }, jsonObject);
             }
         });
     }

@@ -49,7 +49,7 @@ public class ResultsActivity extends AppCompatActivity {
             for(int i = 0; i < size; i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 Show show = new Show();
-                show.setShowTitle(jsonObject.optString("show"));
+                show.setShowTitle(jsonObject.optString("title"));
 
                 shows.add(show);
             }
